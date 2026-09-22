@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vessel</title>
+<meta name="description" content="A ceramics studio product page where the pot is real geometry — turned on a lathe in WebGL and configured live." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bone:#f4efe7; --shell:#ece4d7; --clay:#b9552f; --clay2:#8e3f22;
+  --ink:#231c16; --sub:#6b5f53; --faint:#a19483; --rule:#ddd2c1;
+  --f:"Cormorant Garamond",Georgia,serif;
+  --s:"Jost",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bone);color:var(--ink);font-family:var(--s);font-size:15px;font-weight:300;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+
+nav{display:flex;align-items:center;gap:26px;padding:20px 34px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.mark{font-family:var(--f);font-size:23px;letter-spacing:.14em;text-transform:uppercase;font-weight:400}
+nav .links{margin-left:auto;display:flex;gap:26px;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+nav .links a{text-decoration:none}
+nav .links a:hover{color:var(--ink)}
+@media(max-width:760px){nav{padding:14px 18px}nav .links{display:none}}
+
+.shop{display:grid;grid-template-columns:1.25fr 1fr;align-items:start}
+@media(max-width:900px){.shop{grid-template-columns:1fr}}
+.viewer{position:sticky;top:0;align-self:start;height:calc(100vh - 66px);min-height:440px;
+  background:linear-gradient(170deg,#f7f3ec 0%,#e7ded0 100%);border-right:1px solid var(--rule)}
+@media(max-width:900px){.viewer{position:relative;height:62vh}}
+canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+canvas.drag{cursor:grabbing}
+.vmeta{position:absolute;left:24px;top:22px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.vhint{position:absolute;left:24px;bottom:20px;font-size:11.5px;color:var(--faint);letter-spacing:.06em}
+.vdims{position:absolute;right:24px;bottom:20px;font-family:var(--f);font-size:15px;font-style:italic;color:var(--sub)}
+.fail{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:30px;color:var(--sub);text-align:center}
+
+.panel{padding:48px 44px 60px;max-width:620px}
+@media(max-width:760px){.panel{padding:30px 18px 48px}}
+.eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--clay);margin-bottom:14px}
+h1{font-family:var(--f);font-weight:300;font-size:clamp(38px,5.6vw,60px);line-height:1;margin:0 0 10px;letter-spacing:-.01em}
+h1 em{font-style:italic}
+.price{font-family:var(--f);font-size:30px;margin:0 0 4px}
+.stock{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin-bottom:26px}
+.stock i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#4d8a5b;margin-right:7px;vertical-align:1px}
+.lead{color:var(--sub);line-height:1.75;font-size:15.5px;margin:0 0 30px;max-width:46ch}
+
+.opt{border-top:1px solid var(--rule);padding:20px 0}
+.olab{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:13px}
+.olab b{font-family:var(--f);font-size:15px;font-style:italic;color:var(--ink);font-weight:400;letter-spacing:0;text-transform:none}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.sw{width:38px;height:38px;border-radius:50%;border:1px solid var(--rule);cursor:pointer;padding:0;position:relative}
+.sw.on{box-shadow:0 0 0 1px var(--bone),0 0 0 2px var(--ink)}
+.shapes{display:flex;gap:9px;flex-wrap:wrap}
+.shape{width:56px;height:62px;border:1px solid var(--rule);background:#fbf8f3;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+.shape.on{border-color:var(--ink);background:#fff}
+.shape svg{width:34px;height:46px}
+.shape svg path{fill:none;stroke:var(--sub);stroke-width:1.4}
+.shape.on svg path{stroke:var(--clay)}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-family:var(--s);font-size:12.5px;letter-spacing:.04em;padding:9px 16px;border:1px solid var(--rule);background:#fbf8f3;cursor:pointer;border-radius:999px;color:var(--sub)}
+.pill.on{background:var(--ink);color:var(--bone);border-color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--clay);background:transparent}
+
+.buy{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.btn{font-family:var(--s);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;padding:17px 32px;border:1px solid var(--ink);
+  background:var(--ink);color:var(--bone);cursor:pointer;position:relative;overflow:hidden}
+.btn span{position:relative;z-index:2}
+.btn::after{content:"";position:absolute;inset:0;background:var(--clay);transform:translateY(101%);transition:transform .36s cubic-bezier(.2,.8,.2,1)}
+.btn:hover::after{transform:translateY(0)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost::after{background:var(--shell)}
+.added{font-size:13px;color:var(--clay);margin-top:14px;font-style:italic;font-family:var(--f);font-size:16px}
+
+.specs{margin-top:36px;border-top:1px solid var(--rule)}
+.spec{display:flex;justify-content:space-between;gap:20px;padding:11px 0;border-bottom:1px solid var(--rule);font-size:13.5px}
+.spec span{color:var(--faint);letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+.spec b{font-weight:400;font-family:var(--f);font-size:16px}
+
+.story{border-top:1px solid var(--rule);padding:80px 34px}
+.story .inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px}
+@media(max-width:860px){.story{padding:52px 18px}.story .inner{grid-template-columns:1fr;gap:30px}}
+.story h2{font-family:var(--f);font-weight:300;font-size:clamp(26px,3.4vw,42px);line-height:1.2;margin:0;letter-spacing:-.01em;max-width:18ch}
+.story h2 em{font-style:italic;color:var(--clay)}
+.story p{color:var(--sub);line-height:1.8;margin:0 0 17px;max-width:44ch}
+footer{background:var(--ink);color:var(--bone);padding:56px 34px 30px}
+.fin{max-width:1180px;margin:0 auto;display:flex;gap:40px;flex-wrap:wrap;align-items:flex-end}
+.fmark{font-family:var(--f);font-size:clamp(40px,8vw,96px);line-height:.85;letter-spacing:.06em;text-transform:uppercase;font-weight:300}
+.fmeta{margin-left:auto;font-size:13px;line-height:2;opacity:.7;text-align:right}
+.fbot{max-width:1180px;margin:44px auto 0;padding-top:18px;border-top:1px solid rgba(244,239,231,.2);display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;opacity:.6}
+.fbot span:last-child{margin-left:auto}
+</style>
+</head>
+<body>
+<nav>
+  <span class="mark">Vessel</span>
+  <span class="links"><a href="#made">How it is made</a><a href="#made">Care</a><a href="#made">Studio</a></span>
+</nav>
+
+<div class="shop">
+  <div class="viewer" id="viewer">
+    <canvas id="gl"></canvas>
+    <div class="vmeta">Turned to order · No. 14</div>
+    <div class="vhint">drag to turn it</div>
+    <div class="vdims" id="dims">—</div>
+  </div>
+
+  <div class="panel">
+    <div class="eyebrow">Stoneware · thrown and turned</div>
+    <h1>The <em>Ridge</em> Vase</h1>
+    <p class="price" id="price">£0</p>
+    <p class="stock"><i></i>Made to order · four weeks</p>
+    <p class="lead">Every pot on this page is real geometry, turned on a lathe in your browser from the profile you choose. Change the silhouette and the surface is rebuilt, vertex by vertex, and lit the way the glaze would be.</p>
+
+    <div class="opt">
+      <div class="olab"><span>Silhouette</span><b id="l-shape">—</b></div>
+      <div class="shapes" id="shapes"></div>
+    </div>
+
+    <div class="opt">
+      <div class="olab"><span>Glaze</span><b id="l-glaze">—</b></div>
+      <div class="swatches" id="glazes"></div>
+    </div>
+
+    <div class="opt">
+      <div class="olab"><span>Finish</span><b id="l-finish">—</b></div>
+      <div class="pills" id="finishes"></div>
+    </div>
+
+    <div class="opt">
+      <div class="olab"><span>Height</span><b id="l-h">—</b></div>
+      <input type="range" id="height" min="18" max="42" step="1" value="28">
+    </div>
+
+    <div class="opt">
+      <div class="olab"><span>Belly</span><b id="l-b">—</b></div>
+      <input type="range" id="belly" min="0" max="100" step="1" value="58">
+    </div>
+
+    <div class="buy">
+      <button class="btn" id="add"><span>Add to basket</span></button>
+      <button class="btn ghost" id="save"><span>Save a picture</span></button>
+    </div>
+    <p class="added" id="added"></p>
+
+    <div class="specs" id="specs"></div>
+  </div>
+</div>
+
+<section class="story" id="made">
+  <div class="inner">
+    <h2>Thrown on the wheel, then <em>turned on the lathe</em> once it is leather hard.</h2>
+    <div>
+      <p>A profile is only ever a line. Spin that line around an axis and you have a pot — which is exactly what happens here, except the axis is in a vertex shader and the line is the one you set with the sliders.</p>
+      <p>The silhouette you pick becomes a radius function. It is sampled up the height of the piece, swept through a full turn, and the normal at every point is taken from the slope of the profile, so the light breaks over the shoulder the way it would on the real thing.</p>
+      <p>Glazes behave differently under the same light. A matte surface scatters it, a gloss returns a hard highlight, and the rim catches more than the belly because it faces away from you. All three are in the shading, which is why changing the finish changes the shape you see.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fin">
+    <div class="fmark">Vessel</div>
+    <div class="fmeta">
+      Studio 4, Kiln Yard<br>
+      Open Thursday to Sunday<br>
+      hello@vessel.example
+    </div>
+  </div>
+  <div class="fbot">
+    <span>A fictional studio, built as a case study.</span>
+    <a href="https://github.com/bxzex/vessel">Source</a>
+    <span>Built by <a href="https://bxzex.com">bxzex</a></span>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const cv = $("gl");
+const gl = cv.getContext("webgl", { antialias:true, alpha:true, preserveDrawingBuffer:true });
+
+/* ---------- matrices ---------- */
+const m4 = {
+  persp(fov, a, n, f){ const t = 1/Math.tan(fov*Math.PI/360);
+    return new Float32Array([t/a,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0]); },
+  look(e, c, u){
+    const z = norm(sub(e,c)), x = norm(cross(u,z)), y = cross(z,x);
+    return new Float32Array([ x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0,
+                             -dot(x,e),-dot(y,e),-dot(z,e),1 ]); },
+  rotY(a){ const c=Math.cos(a),s=Math.sin(a);
+    return new Float32Array([c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]); },
+};
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const norm=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l];};
+
+/* =====================================================================
+   The pot: a profile curve swept through a full turn. The normal comes
+   from the slope of the profile, which is what makes the light break
+   over the shoulder correctly instead of sliding round a tube.
+   ===================================================================== */
+const SHAPES = {
+  Ridge:   { d:"M18 44 C6 36 8 20 16 12 C20 8 20 5 18 2", f:(t,b)=>0.30 + 0.52*Math.pow(Math.sin(Math.PI*Math.pow(t,0.78)),1.1)*b + 0.05*Math.cos(t*Math.PI*5)*b },
+  Bell:    { d:"M20 44 C4 38 6 16 17 4 L17 2", f:(t,b)=>0.22 + 0.72*Math.pow(1-t,1.5)*b + 0.14 },
+  Column:  { d:"M14 44 L13 6 C13 3 15 2 17 2", f:(t,b)=>0.34 + 0.10*Math.sin(t*Math.PI)*b + 0.05*t },
+  Bottle:  { d:"M19 44 C5 38 7 18 14 13 C16 11 16 5 15 2", f:(t,b)=>{
+      const belly = 0.30 + 0.56*Math.exp(-Math.pow((t-0.26)/0.26,2))*b;
+      const neck  = 0.12 + 0.10*Math.exp(-Math.pow((t-0.92)/0.16,2));
+      return Math.max(neck, belly*Math.max(0.16, 1-Math.pow(Math.max(0,t-0.55)/0.45,1.7)));
+    } },
+};
+const GLAZES = {
+  "Ash":      { hex:"#cfc6b6", col:[0.78,0.75,0.69], price:0 },
+  "Oxblood":  { hex:"#8e3524", col:[0.52,0.18,0.12], price:14 },
+  "Celadon":  { hex:"#8fa891", col:[0.50,0.62,0.52], price:14 },
+  "Tenmoku":  { hex:"#2e2723", col:[0.14,0.12,0.11], price:22 },
+  "Cobalt":   { hex:"#2f4f82", col:[0.16,0.28,0.49], price:22 },
+};
+const FINISHES = { Matte:{ shine:6, spec:0.12 }, Satin:{ shine:26, spec:0.34 }, Gloss:{ shine:96, spec:0.78 } };
+
+let shape = "Ridge", glaze = "Ash", finish = "Satin";
+const RINGS = 168, STEPS = 132;
+
+function buildGeometry(){
+  const f = SHAPES[shape].f;
+  const belly = +$("belly").value/100 * 1.3 + 0.35;
+  const hgt = +$("height").value;
+  const H = hgt/28;                                   // relative to the reference 28 cm piece
+  const pos = new Float32Array(RINGS*(STEPS+1)*3);
+  const nrm = new Float32Array(RINGS*(STEPS+1)*3);
+  let p = 0;
+  for(let i=0;i<=STEPS;i++){
+    const t = i/STEPS;
+    const r = f(t, belly);
+    const y = (t - 0.5)*1.9*H;
+    const e = 0.004;
+    const dr = (f(Math.min(1,t+e), belly) - f(Math.max(0,t-e), belly)) / (2*e);
+    const dy = 1.9*H;
+    for(let j=0;j<RINGS;j++){
+      const a = j/RINGS*Math.PI*2, c = Math.cos(a), s = Math.sin(a);
+      pos[p]   = r*c; pos[p+1] = y; pos[p+2] = r*s;
+      // the surface normal is perpendicular to the profile tangent, swept round
+      const n = norm([c*dy, -dr*1.0, s*dy]);
+      nrm[p] = n[0]; nrm[p+1] = n[1]; nrm[p+2] = n[2];
+      p += 3;
+    }
+  }
+  const idx = new Uint16Array(STEPS*RINGS*6);
+  let q = 0;
+  for(let i=0;i<STEPS;i++) for(let j=0;j<RINGS;j++){
+    const a = i*RINGS + j, b = a + RINGS, j2 = (j+1)%RINGS;
+    const a2 = i*RINGS + j2, b2 = a2 + RINGS;
+    idx[q++]=a; idx[q++]=b; idx[q++]=a2;
+    idx[q++]=b; idx[q++]=b2; idx[q++]=a2;
+  }
+  let maxR = 0;
+  for(let i=0;i<=STEPS;i++) maxR = Math.max(maxR, f(i/STEPS, belly));
+  return { pos, nrm, idx, height:hgt, maxR, halfH: 0.95*H };
+}
+
+const VERT = `
+attribute vec3 aPos; attribute vec3 aNrm;
+uniform mat4 uProj, uView, uModel;
+varying vec3 vN, vW;
+void main(){
+  vec4 w = uModel * vec4(aPos,1.0);
+  vW = w.xyz;
+  vN = mat3(uModel) * aNrm;
+  gl_Position = uProj * uView * w;
+}`;
+const FRAG = `
+precision highp float;
+varying vec3 vN, vW;
+uniform vec3 uCol, uEye;
+uniform float uShine, uSpec;
+void main(){
+  vec3 n = normalize(vN);
+  vec3 v = normalize(uEye - vW);
+  if(!gl_FrontFacing) n = -n;
+  vec3 l1 = normalize(vec3(-0.55, 0.82, 0.62));
+  vec3 l2 = normalize(vec3(0.75, 0.15, -0.35));
+
+  float d1 = max(0.0, dot(n,l1));
+  float d2 = max(0.0, dot(n,l2)) * 0.28;
+  // a hemisphere term so the underside picks up bounce from the table
+  float hemi = 0.5 + 0.5*n.y;
+  vec3 amb = mix(vec3(0.34,0.30,0.26), vec3(0.62,0.60,0.57), hemi) * 0.52;
+
+  vec3 h = normalize(l1 + v);
+  float s = pow(max(0.0, dot(n,h)), uShine) * uSpec;
+  // fresnel: the rim turns away from you, so it catches more light
+  float fres = pow(1.0 - max(0.0, dot(n,v)), 3.4) * 0.5;
+
+  // glaze pools thicker at the foot and thins at the lip
+  float pool = smoothstep(-0.95, 0.55, vW.y);
+  vec3 base = uCol * mix(0.82, 1.1, pool);
+
+  vec3 col = base*(amb + d1*0.88 + d2) + vec3(1.0,0.97,0.93)*s + vec3(0.92,0.88,0.84)*fres*uSpec;
+  col = col/(col+vec3(0.85));                      // gentle roll off instead of a hard clip
+  gl_FragColor = vec4(pow(col, vec3(1.0/2.2)), 1.0);
+}`;
+
+let prog = null, buf = {}, geo = null, ok = false;
+if(gl){
+  const mk = (src,t) => { const s = gl.createShader(t); gl.shaderSource(s,src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){ console.warn(gl.getShaderInfoLog(s)); return null; } return s; };
+  const vs = mk(VERT, gl.VERTEX_SHADER), fs = mk(FRAG, gl.FRAGMENT_SHADER);
+  if(vs && fs){
+    prog = gl.createProgram();
+    gl.attachShader(prog,vs); gl.attachShader(prog,fs); gl.linkProgram(prog);
+    if(gl.getProgramParameter(prog, gl.LINK_STATUS)){
+      gl.useProgram(prog);
+      buf.pos = gl.createBuffer(); buf.nrm = gl.createBuffer(); buf.idx = gl.createBuffer();
+      buf.aPos = gl.getAttribLocation(prog,"aPos");
+      buf.aNrm = gl.getAttribLocation(prog,"aNrm");
+      ["uProj","uView","uModel","uCol","uEye","uShine","uSpec"].forEach(n => buf[n] = gl.getUniformLocation(prog,n));
+      gl.enable(gl.DEPTH_TEST);
+      ok = true;
+    }
+  }
+}
+if(!ok){
+  const d = document.createElement("div");
+  d.className = "fail";
+  d.innerHTML = "This browser cannot run WebGL, so the pot cannot be turned here. Everything else on the page still works.";
+  $("viewer").appendChild(d);
+  cv.style.display = "none";
+}
+
+function upload(){
+  geo = buildGeometry();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf.pos); gl.bufferData(gl.ARRAY_BUFFER, geo.pos, gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf.nrm); gl.bufferData(gl.ARRAY_BUFFER, geo.nrm, gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.idx); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geo.idx, gl.STATIC_DRAW);
+}
+let spin = 0.6, dragging = false, lastX = 0, auto = true;
+function resize(){
+  const r = $("viewer").getBoundingClientRect(), d = Math.min(2, devicePixelRatio||1);
+  cv.width = Math.max(1,Math.round(r.width*d)); cv.height = Math.max(1,Math.round(r.height*d));
+  if(ok) gl.viewport(0,0,cv.width,cv.height);
+}
+function frame(){
+  requestAnimationFrame(frame);
+  if(!ok || !geo) return;
+  if(auto && !dragging) spin += 0.0032;
+  gl.clearColor(0,0,0,0);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.useProgram(prog);
+  const aspect = cv.width/cv.height;
+  // pull back until both the height and the width of the piece fit, whatever
+  // shape of window it is being looked at in
+  const FOV = 34, tanHalf = Math.tan(FOV*Math.PI/360);
+  const dV = (geo.halfH*1.16)/tanHalf;
+  const dH = (geo.maxR*1.16)/(tanHalf*aspect);
+  const eye = [0, 0.02, Math.max(2.6, dV, dH)];
+  gl.uniformMatrix4fv(buf.uProj, false, m4.persp(FOV, aspect, 0.1, 60));
+  gl.uniformMatrix4fv(buf.uView, false, m4.look(eye, [0,0,0], [0,1,0]));
+  gl.uniformMatrix4fv(buf.uModel, false, m4.rotY(spin));
+  const g = GLAZES[glaze], f = FINISHES[finish];
+  gl.uniform3fv(buf.uCol, g.col);
+  gl.uniform3fv(buf.uEye, eye);
+  gl.uniform1f(buf.uShine, f.shine);
+  gl.uniform1f(buf.uSpec, f.spec);
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf.pos);
+  gl.enableVertexAttribArray(buf.aPos); gl.vertexAttribPointer(buf.aPos,3,gl.FLOAT,false,0,0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf.nrm);
+  gl.enableVertexAttribArray(buf.aNrm); gl.vertexAttribPointer(buf.aNrm,3,gl.FLOAT,false,0,0);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.idx);
+  gl.drawElements(gl.TRIANGLES, geo.idx.length, gl.UNSIGNED_SHORT, 0);
+}
+cv.addEventListener("pointerdown", e => { dragging = true; auto = false; lastX = e.clientX; cv.setPointerCapture(e.pointerId); cv.classList.add("drag"); });
+cv.addEventListener("pointerup", () => { dragging = false; cv.classList.remove("drag"); });
+cv.addEventListener("pointermove", e => { if(dragging){ spin += (e.clientX-lastX)*0.01; lastX = e.clientX; } });
+
+/* ---------- configurator ---------- */
+function priceOf(){
+  const h = +$("height").value;
+  const base = 78 + Math.round((h-18)*4.5);
+  return base + GLAZES[glaze].price + (finish === "Gloss" ? 8 : 0);
+}
+function update(rebuild){
+  if(ok && rebuild !== false) upload();
+  const h = +$("height").value;
+  const wide = geo ? Math.round(geo.maxR/0.95*h*0.62) : 0;
+  $("price").textContent = "£"+priceOf();
+  $("l-shape").textContent = shape;
+  $("l-glaze").textContent = glaze;
+  $("l-finish").textContent = finish;
+  $("l-h").textContent = h+" cm";
+  $("l-b").textContent = (+$("belly").value < 34 ? "Narrow" : +$("belly").value > 70 ? "Full" : "Even");
+  $("dims").textContent = h+" × "+wide+" cm";
+  $("specs").innerHTML = [
+    ["Form", shape],
+    ["Glaze", glaze],
+    ["Finish", finish],
+    ["Height", h+" cm"],
+    ["Widest point", wide+" cm"],
+    ["Body", "Reduction stoneware, 1280°C"],
+    ["Surface", geo ? (geo.idx.length/3).toLocaleString()+" triangles, turned live" : "—"],
+  ].map(([k,v]) => '<div class="spec"><span>'+k+'</span><b>'+v+'</b></div>').join("");
+}
+const shapesEl = $("shapes");
+Object.entries(SHAPES).forEach(([name,s],i) => {
+  const b = document.createElement("button");
+  b.className = "shape" + (name === shape ? " on" : "");
+  b.title = name;
+  b.innerHTML = '<svg viewBox="0 0 34 46"><path d="'+s.d+'"/></svg>';
+  b.onclick = () => { shape = name; [...shapesEl.children].forEach(c=>c.classList.toggle("on",c===b)); update(); };
+  shapesEl.appendChild(b);
+});
+const gEl = $("glazes");
+Object.entries(GLAZES).forEach(([name,g]) => {
+  const b = document.createElement("button");
+  b.className = "sw" + (name === glaze ? " on" : "");
+  b.style.background = g.hex; b.title = name;
+  b.onclick = () => { glaze = name; [...gEl.children].forEach(c=>c.classList.toggle("on",c===b)); update(false); };
+  gEl.appendChild(b);
+});
+const fEl = $("finishes");
+Object.keys(FINISHES).forEach(name => {
+  const b = document.createElement("button");
+  b.className = "pill" + (name === finish ? " on" : "");
+  b.textContent = name;
+  b.onclick = () => { finish = name; [...fEl.children].forEach(c=>c.classList.toggle("on",c===b)); update(false); };
+  fEl.appendChild(b);
+});
+$("height").oninput = () => update();
+$("belly").oninput = () => update();
+$("add").onclick = () => {
+  $("added").textContent = "Added — "+shape+" in "+glaze+", "+finish.toLowerCase()+", "+$("height").value+" cm, £"+priceOf()+
+    ". Nothing was actually ordered; this is a case study.";
+};
+$("save").onclick = () => {
+  if(!ok) return;
+  const a = document.createElement("a");
+  a.href = cv.toDataURL("image/png");
+  a.download = "vessel-"+shape.toLowerCase()+"-"+glaze.toLowerCase()+".png"; a.click();
+};
+window.addEventListener("resize", () => { resize(); });
+resize(); update(); frame();
+</script>
+</body>
+</html>
