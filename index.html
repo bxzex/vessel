@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Vessel</title>
-<meta name="description" content="A ceramics studio product page where the pot is real geometry — turned on a lathe in WebGL and configured live." />
+<meta name="description" content="A ceramics studio product page where the pot is real geometry, turned on a lathe in WebGL and configured live." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -155,7 +155,7 @@ footer{background:var(--ink);color:var(--bone);padding:56px 34px 30px}
   <div class="inner">
     <h2>Thrown on the wheel, then <em>turned on the lathe</em> once it is leather hard.</h2>
     <div>
-      <p>A profile is only ever a line. Spin that line around an axis and you have a pot — which is exactly what happens here, except the axis is in a vertex shader and the line is the one you set with the sliders.</p>
+      <p>A profile is only ever a line. Spin that line around an axis and you have a pot. That is exactly what happens here, except the axis is in a vertex shader and the line is the one you set with the sliders.</p>
       <p>The silhouette you pick becomes a radius function. It is sampled up the height of the piece, swept through a full turn, and the normal at every point is taken from the slope of the profile, so the light breaks over the shoulder the way it would on the real thing.</p>
       <p>Glazes behave differently under the same light. A matte surface scatters it, a gloss returns a hard highlight, and the rim catches more than the belly because it faces away from you. All three are in the shading, which is why changing the finish changes the shape you see.</p>
     </div>
@@ -432,7 +432,7 @@ Object.keys(FINISHES).forEach(name => {
 $("height").oninput = () => update();
 $("belly").oninput = () => update();
 $("add").onclick = () => {
-  $("added").textContent = "Added — "+shape+" in "+glaze+", "+finish.toLowerCase()+", "+$("height").value+" cm, £"+priceOf()+
+  $("added").textContent = "Added: "+shape+" in "+glaze+", "+finish.toLowerCase()+", "+$("height").value+" cm, £"+priceOf()+
     ". Nothing was actually ordered; this is a case study.";
 };
 $("save").onclick = () => {
