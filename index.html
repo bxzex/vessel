@@ -7,25 +7,25 @@
 <meta name="description" content="A ceramics studio product page where the pot is real geometry, turned on a lathe in WebGL and configured live." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Assistant:wght@400;600&display=swap" rel="stylesheet" />
 <style>
 :root{
   --bone:#f4efe7; --shell:#ece4d7; --clay:#b9552f; --clay2:#8e3f22;
-  --ink:#231c16; --sub:#6b5f53; --faint:#a19483; --rule:#ddd2c1;
+  --ink:#231c16; --sub:#6b5f53; --faint:#766a5c; --rule:#ddd2c1;
   --f:"Cormorant Garamond",Georgia,serif;
-  --s:"Jost",system-ui,sans-serif;
+  --s:"Assistant",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bone);color:var(--ink);font-family:var(--s);font-size:15px;font-weight:300;-webkit-font-smoothing:antialiased}
+body{background:var(--bone);color:var(--ink);font-family:var(--s);font-size:16px;font-weight:400;-webkit-font-smoothing:antialiased}
 a{color:inherit}
 
 nav{display:flex;align-items:center;gap:26px;padding:20px 34px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
 .mark{font-family:var(--f);font-size:23px;letter-spacing:.14em;text-transform:uppercase;font-weight:400}
-nav .links{margin-left:auto;display:flex;gap:26px;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
+nav .links{margin-left:auto;display:flex;gap:26px;font-size:15px;color:var(--sub)}
 nav .links a{text-decoration:none}
 nav .links a:hover{color:var(--ink)}
-@media(max-width:760px){nav{padding:14px 18px}nav .links{display:none}}
+@media(max-width:760px){nav{padding:12px 16px;gap:8px 18px}nav .links{gap:18px;font-size:14px}}
 
 .shop{display:grid;grid-template-columns:1.25fr 1fr;align-items:start}
 @media(max-width:900px){.shop{grid-template-columns:1fr}}
@@ -34,23 +34,23 @@ nav .links a:hover{color:var(--ink)}
 @media(max-width:900px){.viewer{position:relative;height:62vh}}
 canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
 canvas.drag{cursor:grabbing}
-.vmeta{position:absolute;left:24px;top:22px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
-.vhint{position:absolute;left:24px;bottom:20px;font-size:11.5px;color:var(--faint);letter-spacing:.06em}
-.vdims{position:absolute;right:24px;bottom:20px;font-family:var(--f);font-size:15px;font-style:italic;color:var(--sub)}
+.vmeta{position:absolute;left:24px;top:22px;font-size:13.5px;color:var(--faint)}
+.vhint{position:absolute;left:24px;bottom:20px;font-size:13.5px;color:var(--faint)}
+.vdims{position:absolute;right:24px;bottom:20px;font-family:var(--f);font-size:17px;color:var(--sub)}
 .fail{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:30px;color:var(--sub);text-align:center}
 
 .panel{padding:48px 44px 60px;max-width:620px}
+@media(prefers-reduced-motion:reduce){.btn::after{transition:none}}
 @media(max-width:760px){.panel{padding:30px 18px 48px}}
-.eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--clay);margin-bottom:14px}
-h1{font-family:var(--f);font-weight:300;font-size:clamp(38px,5.6vw,60px);line-height:1;margin:0 0 10px;letter-spacing:-.01em}
-h1 em{font-style:italic}
+.eyebrow{font-size:14.5px;color:var(--sub);margin-bottom:12px}
+h1{font-family:var(--f);font-weight:400;font-size:clamp(38px,5.6vw,60px);line-height:1;margin:0 0 10px;letter-spacing:-.01em}
 .price{font-family:var(--f);font-size:30px;margin:0 0 4px}
-.stock{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin-bottom:26px}
-.lead{color:var(--sub);line-height:1.75;font-size:15.5px;margin:0 0 30px;max-width:46ch}
+.stock{font-size:14.5px;color:var(--sub);margin:0 0 24px}
+.lead{color:var(--sub);line-height:1.65;font-size:16.5px;margin:0 0 30px;max-width:46ch}
 
 .opt{border-top:1px solid var(--rule);padding:20px 0}
-.olab{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-bottom:13px}
-.olab b{font-family:var(--f);font-size:15px;font-style:italic;color:var(--ink);font-weight:400;letter-spacing:0;text-transform:none}
+.olab{display:flex;justify-content:space-between;align-items:baseline;font-size:14.5px;color:var(--sub);margin-bottom:13px}
+.olab b{color:var(--ink);font-weight:600}
 .swatches{display:flex;gap:10px;flex-wrap:wrap}
 .sw{width:38px;height:38px;border-radius:50%;border:1px solid var(--rule);cursor:pointer;padding:0;position:relative}
 .sw.on{box-shadow:0 0 0 1px var(--bone),0 0 0 2px var(--ink)}
@@ -61,90 +61,90 @@ h1 em{font-style:italic}
 .shape svg path{fill:none;stroke:var(--sub);stroke-width:1.4}
 .shape.on svg path{stroke:var(--clay)}
 .pills{display:flex;gap:8px;flex-wrap:wrap}
-.pill{font-family:var(--s);font-size:12.5px;letter-spacing:.04em;padding:9px 16px;border:1px solid var(--rule);background:#fbf8f3;cursor:pointer;border-radius:999px;color:var(--sub)}
+.pill{font-family:var(--s);font-size:14.5px;padding:9px 18px;border:1px solid var(--rule);background:#fbf8f3;cursor:pointer;color:var(--sub)}
 .pill.on{background:var(--ink);color:var(--bone);border-color:var(--ink)}
 input[type=range]{width:100%;accent-color:var(--clay);background:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--clay);outline-offset:3px}
 
 .buy{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
-.btn{font-family:var(--s);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;padding:17px 32px;border:1px solid var(--ink);
+.btn{font-family:var(--s);font-size:15.5px;font-weight:600;padding:16px 30px;border:1px solid var(--ink);
   background:var(--ink);color:var(--bone);cursor:pointer;position:relative;overflow:hidden}
 .btn span{position:relative;z-index:2}
 .btn::after{content:"";position:absolute;inset:0;background:var(--clay);transform:translateY(101%);transition:transform .36s cubic-bezier(.2,.8,.2,1)}
 .btn:hover::after{transform:translateY(0)}
 .btn.ghost{background:transparent;color:var(--ink)}
 .btn.ghost::after{background:var(--shell)}
-.added{font-size:13px;color:var(--clay);margin-top:14px;font-style:italic;font-family:var(--f);font-size:16px}
+.added{color:var(--clay2);margin:14px 0 0;font-size:15px}
 
 .specs{margin-top:36px;border-top:1px solid var(--rule)}
-.spec{display:flex;justify-content:space-between;gap:20px;padding:11px 0;border-bottom:1px solid var(--rule);font-size:13.5px}
-.spec span{color:var(--faint);letter-spacing:.08em;text-transform:uppercase;font-size:11px}
-.spec b{font-weight:400;font-family:var(--f);font-size:16px}
+.spec{display:flex;justify-content:space-between;gap:20px;padding:11px 0;border-bottom:1px solid var(--rule)}
+.spec span{color:var(--faint);font-size:14.5px;flex:none}
+.spec b{font-weight:400;font-size:14.5px;text-align:right}
 
 .story{border-top:1px solid var(--rule);padding:80px 34px}
 .story .inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px}
 @media(max-width:860px){.story{padding:52px 18px}.story .inner{grid-template-columns:1fr;gap:30px}}
-.story h2{font-family:var(--f);font-weight:300;font-size:clamp(26px,3.4vw,42px);line-height:1.2;margin:0;letter-spacing:-.01em;max-width:18ch}
-.story h2 em{font-style:italic;color:var(--clay)}
-.story p{color:var(--sub);line-height:1.8;margin:0 0 17px;max-width:44ch}
+.story h2{font-family:var(--f);font-weight:400;font-size:clamp(26px,3.4vw,42px);line-height:1.2;margin:0;letter-spacing:-.01em;max-width:18ch}
+.story p{color:var(--sub);line-height:1.7;margin:0 0 17px;max-width:48ch}
 footer{background:var(--ink);color:var(--bone);padding:56px 34px 30px}
 .fin{max-width:1180px;margin:0 auto;display:flex;gap:40px;flex-wrap:wrap;align-items:flex-end}
-.fmark{font-family:var(--f);font-size:clamp(40px,8vw,96px);line-height:.85;letter-spacing:.06em;text-transform:uppercase;font-weight:300}
-.fmeta{margin-left:auto;font-size:13px;line-height:2;opacity:.7;text-align:right}
-.fbot{max-width:1180px;margin:44px auto 0;padding-top:18px;border-top:1px solid rgba(244,239,231,.2);display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;opacity:.6}
+.fmark{font-family:var(--f);font-size:clamp(40px,8vw,96px);line-height:.85;letter-spacing:.06em;text-transform:uppercase;font-weight:400}
+.fmeta{margin-left:auto;font-size:15px;line-height:1.8;color:#cfc6b6;text-align:right}
+.fbot{max-width:1180px;margin:44px auto 0;padding-top:18px;border-top:1px solid rgba(244,239,231,.2);display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px;color:#b8ad9c}
 .fbot span:last-child{margin-left:auto}
 </style>
 </head>
 <body>
 <nav>
   <span class="mark">Vessel</span>
-  <span class="links"><a href="#made">How it is made</a><a href="#made">Care</a><a href="#made">Studio</a></span>
+  <span class="links"><a href="#made">How it is made</a><a href="#specs">Care</a><a href="#studio">Studio</a></span>
 </nav>
 
 <div class="shop">
   <div class="viewer" id="viewer">
     <canvas id="gl"></canvas>
-    <div class="vmeta">Turned to order · No. 14</div>
-    <div class="vhint">drag to turn it</div>
-    <div class="vdims" id="dims">—</div>
+    <div class="vmeta">Turned to order</div>
+    <div class="vhint">Drag to turn it</div>
+    <div class="vdims" id="dims"></div>
   </div>
 
   <div class="panel">
-    <div class="eyebrow">Stoneware · thrown and turned</div>
-    <h1>The <em>Ridge</em> Vase</h1>
+    <div class="eyebrow">Stoneware, thrown and turned</div>
+    <h1>The <span id="h-shape">Ridge</span> vase</h1>
     <p class="price" id="price">£0</p>
-    <p class="stock">Made to order · four weeks</p>
-    <p class="lead">Every pot on this page is real geometry, turned on a lathe in your browser from the profile you choose. Change the silhouette and the surface is rebuilt, vertex by vertex, and lit the way the glaze would be.</p>
+    <p class="stock">Made to order, ready in four weeks</p>
+    <p class="lead">A stoneware vase made one at a time. Pick the silhouette, glaze and finish, set the height and how full the belly is, and the pot on the left is turned again to match.</p>
 
     <div class="opt">
-      <div class="olab"><span>Silhouette</span><b id="l-shape">—</b></div>
+      <div class="olab"><span>Silhouette</span><b id="l-shape"></b></div>
       <div class="shapes" id="shapes"></div>
     </div>
 
     <div class="opt">
-      <div class="olab"><span>Glaze</span><b id="l-glaze">—</b></div>
+      <div class="olab"><span>Glaze</span><b id="l-glaze"></b></div>
       <div class="swatches" id="glazes"></div>
     </div>
 
     <div class="opt">
-      <div class="olab"><span>Finish</span><b id="l-finish">—</b></div>
+      <div class="olab"><span>Finish</span><b id="l-finish"></b></div>
       <div class="pills" id="finishes"></div>
     </div>
 
     <div class="opt">
-      <div class="olab"><span>Height</span><b id="l-h">—</b></div>
-      <input type="range" id="height" min="18" max="42" step="1" value="28">
+      <div class="olab"><span>Height</span><b id="l-h"></b></div>
+      <input type="range" id="height" aria-label="Height in centimetres" min="18" max="42" step="1" value="28">
     </div>
 
     <div class="opt">
-      <div class="olab"><span>Belly</span><b id="l-b">—</b></div>
-      <input type="range" id="belly" min="0" max="100" step="1" value="58">
+      <div class="olab"><span>Belly</span><b id="l-b"></b></div>
+      <input type="range" id="belly" aria-label="Belly" min="0" max="100" step="1" value="58">
     </div>
 
     <div class="buy">
       <button class="btn" id="add"><span>Add to basket</span></button>
       <button class="btn ghost" id="save"><span>Save a picture</span></button>
     </div>
-    <p class="added" id="added"></p>
+    <p class="added" id="added" role="status"></p>
 
     <div class="specs" id="specs"></div>
   </div>
@@ -152,7 +152,7 @@ footer{background:var(--ink);color:var(--bone);padding:56px 34px 30px}
 
 <section class="story" id="made">
   <div class="inner">
-    <h2>Thrown on the wheel, then <em>turned on the lathe</em> once it is leather hard.</h2>
+    <h2>Thrown on the wheel, then turned on the lathe once it is leather hard.</h2>
     <div>
       <p>A profile is only ever a line. Spin that line around an axis and you have a pot. That is exactly what happens here, except the axis is in a vertex shader and the line is the one you set with the sliders.</p>
       <p>The silhouette you pick becomes a radius function. It is sampled up the height of the piece, swept through a full turn, and the normal at every point is taken from the slope of the profile, so the light breaks over the shoulder the way it would on the real thing.</p>
@@ -161,19 +161,18 @@ footer{background:var(--ink);color:var(--bone);padding:56px 34px 30px}
   </div>
 </section>
 
-<footer>
+<footer id="studio">
   <div class="fin">
     <div class="fmark">Vessel</div>
     <div class="fmeta">
-      Studio 4, Kiln Yard<br>
+      Studio 4, Kiln Yard, Stoke-on-Trent<br>
       Open Thursday to Sunday<br>
       hello@vessel.example
     </div>
   </div>
   <div class="fbot">
-    <span>A fictional studio, built as a case study.</span>
-    <a href="https://github.com/bxzex/vessel">Source</a>
-    <span>Built by <a href="https://bxzex.com">bxzex</a></span>
+    <span>© 2026 <a href="https://bxzex.com">bxzex</a> · A fictional studio, built as a case study</span>
+    <span><a href="https://github.com/bxzex/vessel">Source</a></span>
   </div>
 </footer>
 
@@ -388,6 +387,7 @@ function update(rebuild){
   const wide = geo ? Math.round(geo.maxR/0.95*h*0.62) : 0;
   $("price").textContent = "£"+priceOf();
   $("l-shape").textContent = shape;
+  $("h-shape").textContent = shape;
   $("l-glaze").textContent = glaze;
   $("l-finish").textContent = finish;
   $("l-h").textContent = h+" cm";
@@ -400,14 +400,15 @@ function update(rebuild){
     ["Height", h+" cm"],
     ["Widest point", wide+" cm"],
     ["Body", "Reduction stoneware, 1280°C"],
-    ["Surface", geo ? (geo.idx.length/3).toLocaleString()+" triangles, turned live" : "—"],
+    ["Care", "Watertight, dishwasher safe"],
+    ["Surface", geo ? (geo.idx.length/3).toLocaleString()+" triangles, turned live" : "Not drawn in this browser"],
   ].map(([k,v]) => '<div class="spec"><span>'+k+'</span><b>'+v+'</b></div>').join("");
 }
 const shapesEl = $("shapes");
 Object.entries(SHAPES).forEach(([name,s],i) => {
   const b = document.createElement("button");
   b.className = "shape" + (name === shape ? " on" : "");
-  b.title = name;
+  b.title = name; b.setAttribute("aria-label", name+" silhouette");
   b.innerHTML = '<svg viewBox="0 0 34 46"><path d="'+s.d+'"/></svg>';
   b.onclick = () => { shape = name; [...shapesEl.children].forEach(c=>c.classList.toggle("on",c===b)); update(); };
   shapesEl.appendChild(b);
@@ -416,7 +417,7 @@ const gEl = $("glazes");
 Object.entries(GLAZES).forEach(([name,g]) => {
   const b = document.createElement("button");
   b.className = "sw" + (name === glaze ? " on" : "");
-  b.style.background = g.hex; b.title = name;
+  b.style.background = g.hex; b.title = name; b.setAttribute("aria-label", name+" glaze");
   b.onclick = () => { glaze = name; [...gEl.children].forEach(c=>c.classList.toggle("on",c===b)); update(false); };
   gEl.appendChild(b);
 });
@@ -431,8 +432,7 @@ Object.keys(FINISHES).forEach(name => {
 $("height").oninput = () => update();
 $("belly").oninput = () => update();
 $("add").onclick = () => {
-  $("added").textContent = "Added: "+shape+" in "+glaze+", "+finish.toLowerCase()+", "+$("height").value+" cm, £"+priceOf()+
-    ". Nothing was actually ordered; this is a case study.";
+  $("added").textContent = "Added to basket: "+shape+" in "+glaze+", "+finish.toLowerCase()+", "+$("height").value+" cm, £"+priceOf()+".";
 };
 $("save").onclick = () => {
   if(!ok) return;
